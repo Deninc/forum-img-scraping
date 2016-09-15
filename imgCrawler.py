@@ -46,7 +46,9 @@ class VozCrawler():
         try:
             res = requests.get(url)
             res.raise_for_status()
-            imgName = os.path.basename(url) # get the 'abc.jpg' in the url
+            # ../abc.jpg?x=123 -> get the 'abc.jpg' name
+            # could've used regex here
+            imgName = url.split('/')[-1].split('?')[0]
             imgDes = os.path.join(dest, imgName) # /abc.jpg for OS X and \\abc.jpg for Windows
             imgFile = open(imgDes, "wb")
             for chunk in res.iter_content(100000):
