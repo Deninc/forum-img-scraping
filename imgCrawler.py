@@ -12,13 +12,16 @@ class VozCrawler():
 
     def download(self):
         '''Multi-thread download'''
+        if not os.path.exists(self.dest):
+            os.makedirs(self.dest)
+
         downloadThreads = []
         for pageID in self.pages:
             # each thread download one page concurrently
             downloadThread = threading.Thread(target=self._downloadPage, args=(pageID,))
             downloadThreads.append(downloadThread)
             downloadThread.start()
-            
+
         # wait for all threads to finish
         for thread in downloadThreads:
             thread.join()
@@ -70,9 +73,6 @@ def getArguments():
     return args.topicID, pages
 
 def main():
-    if not os.path.exists(DIR):
-        os.makedirs(DIR)
-
     topic, pages = getArguments()
     c = VozCrawler(topic, pages, DIR)
     c.download()
